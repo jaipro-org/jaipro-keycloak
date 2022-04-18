@@ -1,0 +1,6 @@
+keycloak:
+  realm: eureka
+  resource: eureka-client-credentials-cli
+  auth-server-url: http://host.docker.internal:30010/auth
+  credentials:
+    secret: G1YWQqnlyAEImeHpabt38klbtde1VgqM
