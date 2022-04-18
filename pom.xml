@@ -43,6 +43,11 @@
             <artifactId>keycloak-admin-client</artifactId>
             <version>17.0.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-authz-client</artifactId>
+            <version>17.0.1</version>
+        </dependency>
 
     </dependencies>
 

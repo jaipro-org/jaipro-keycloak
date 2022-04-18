@@ -3,6 +3,8 @@ package com.bindord.eureka.keycloak;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.authorization.client.AuthzClient;
+import org.keycloak.representations.AccessTokenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -27,20 +29,26 @@ public class EurekaKeycloakApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        RealmResource realmResource = keycloak.realm(realm);
-        var users = realmResource.users();
-        users.list().forEach(user -> System.out.println(user.getEmail()));
-        var clients = realmResource.clients();
-        clients.findAll().forEach(cli -> System.out.println(cli.getId()));
+//        RealmResource realmResource = keycloak.realm(realm);
+//        var users = realmResource.users();
+//        users.list().forEach(user -> System.out.println(user.getEmail()));
+//        var clients = realmResource.clients();
+//        clients.findAll().forEach(cli -> System.out.println(cli.getId()));
 
+//        System.out.println(keycloak.tokenManager().getAccessTokenString());
+        String username = "peterpaul.0194@gmail.com";
+        String pwd = "stalker147";
 
-        System.out.println(keycloak.tokenManager().getAccessTokenString());
         Keycloak instance = Keycloak.getInstance(
                 authUrl,
-                realm, "dummy", "Stalker@147",
+                realm, username, pwd,
                 clientId, secretKey);
+        System.out.println("User authentication in process: user --> " + username);
         System.out.println(instance.tokenManager().getAccessTokenString());
-
+        AuthzClient authzClient = AuthzClient.create();
+        Thread.sleep(2000);
+        AccessTokenResponse response = authzClient.obtainAccessToken(username, pwd);
+        System.out.println(response.getToken());
     }
 
     public static void main(String[] args) {
