@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+    <Properties>
+        <Property name="LOG_PATH">
+            $${sys:STORAGE_FILEPATH}/epay_rsrc_logs
+        </Property>
+        <Property name="LOG_PATTERN">
+            [%-5level] %d{yyyy-MM-dd HH:mm:ss.SS} ${hostName} --- [%15.15t] %-40.40c{1.} : %m%n%ex
+        </Property>
+    </Properties>
+    <Appenders>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+        <RollingFile
+                name="AppFileAppender"
+                fileName="${LOG_PATH}/app.log"
+                filePattern="${LOG_PATH}/$${date:yyyy-MM}/app.%d{yyyy-MM-dd}.log.gz"
+                ignoreExceptions="false">
+            <PatternLayout>
+                <Pattern>
+                    [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
+                </Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="5" />
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="com.bindord.eureka.keycloak.aop" level="info" additivity="false">
+            <AppenderRef ref="AppFileAppender"/>
+        </Logger>
+        <Logger name="com.bindord.eureka.keycloak.service.impl" level="warn" additivity="false">
+            <AppenderRef ref="AppFileAppender"/>
+        </Logger>
+        <Logger name="com.bindord.eureka.keycloak.advice" level="warn" additivity="false">
+           <AppenderRef ref="AppFileAppender"/>
+        </Logger>
+        <Logger name="com.bindord.eureka.keycloak.service.impl.EmailServiceImpl" level="error" additivity="false">
+            <AppenderRef ref="AppFileAppender"/>
+        </Logger>
+        <Root level="info">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="AppFileAppender"/>
+        </Root>
+    </Loggers>
+</Configuration>
