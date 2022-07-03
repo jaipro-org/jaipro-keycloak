@@ -15,6 +15,7 @@ public class Enums {
         EX_NULL_POINTER(-10),
         EX_JACKSON_INVALID_FORMAT(-11),
         NOT_FOUND_MATCHES(-12),
+        EX_KEYCLOAK_EXCEPTION(-13),
         EX_NUMBER_FORMAT(-99),
         EX_MAX_SIZE_MULTIPART(-100),
         EX_MAX_UPLOAD_SIZE(-101),

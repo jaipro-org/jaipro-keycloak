@@ -6,6 +6,7 @@ import com.bindord.eureka.keycloak.util.Enums;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.keycloak.authorization.client.util.HttpResponseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import static com.bindord.eureka.keycloak.util.Enums.Error.ARCHIVO_EXCEDE_MAX_PERMITIDO;
 import static com.bindord.eureka.keycloak.util.Enums.Msg.RESOURCE_NOT_FOUND;
 import static com.bindord.eureka.keycloak.util.Enums.ResponseCode.EX_JACKSON_INVALID_FORMAT;
+import static com.bindord.eureka.keycloak.util.Enums.ResponseCode.EX_KEYCLOAK_EXCEPTION;
 import static com.bindord.eureka.keycloak.util.Enums.ResponseCode.EX_NULL_POINTER;
 import static com.bindord.eureka.keycloak.util.Enums.ResponseCode.EX_NUMBER_FORMAT;
 import static com.bindord.eureka.keycloak.util.Enums.ResponseCode.ILLEGAL_ARGUMENT_EXCEPTION;
@@ -106,7 +108,19 @@ public class ExceptionControllerAdvice {
             LOGGER.warn(ex.getStackTrace()[i].toString());
         }
         return buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, EX_JACKSON_INVALID_FORMAT.get(), ex));
+    }
 
+    @ExceptionHandler(HttpResponseException.class)
+    public @ResponseBody
+    ResponseEntity<Object> handleErrorByHttpResponseException(HttpResponseException ex) {
+        LOGGER.warn(ex.getMessage());
+        for (int i = 0; i < 10; i++) {
+            LOGGER.warn(ex.getStackTrace()[i].toString());
+        }
+        if(ex.getStatusCode() == HttpStatus.UNAUTHORIZED.value()) {
+            return buildResponseEntity(new ApiError(HttpStatus.UNAUTHORIZED, EX_KEYCLOAK_EXCEPTION.get(), ex));
+        }
+        return buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, EX_KEYCLOAK_EXCEPTION.get(), ex));
     }
 }
 
