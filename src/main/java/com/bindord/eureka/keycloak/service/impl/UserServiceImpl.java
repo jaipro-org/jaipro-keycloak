@@ -4,6 +4,7 @@ import com.bindord.eureka.keycloak.advice.CustomValidationException;
 import com.bindord.eureka.keycloak.advice.NotFoundValidationException;
 import com.bindord.eureka.keycloak.domain.User;
 import com.bindord.eureka.keycloak.domain.dto.PasswordDTO;
+import com.bindord.eureka.keycloak.domain.request.EurekaUser;
 import com.bindord.eureka.keycloak.domain.request.UserLogin;
 import com.bindord.eureka.keycloak.domain.response.UserToken;
 import com.bindord.eureka.keycloak.repository.UserAdminRepository;
@@ -32,6 +33,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User save(User entity) throws NotFoundValidationException, CustomValidationException {
         return null;
+    }
+
+    @Override
+    public UserRepresentation save(EurekaUser user) throws CustomValidationException {
+        return repository.save(user);
     }
 
     @Override

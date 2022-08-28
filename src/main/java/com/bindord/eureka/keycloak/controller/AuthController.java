@@ -1,6 +1,7 @@
 package com.bindord.eureka.keycloak.controller;
 
 import com.bindord.eureka.keycloak.advice.NotFoundValidationException;
+import com.bindord.eureka.keycloak.domain.request.EurekaUser;
 import com.bindord.eureka.keycloak.domain.request.UserLogin;
 import com.bindord.eureka.keycloak.domain.response.UserToken;
 import com.bindord.eureka.keycloak.service.UserService;

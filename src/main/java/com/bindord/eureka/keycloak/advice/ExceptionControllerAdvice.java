@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
+import javax.ws.rs.NotAuthorizedException;
+
 import static com.bindord.eureka.keycloak.util.Enums.Error.ARCHIVO_EXCEDE_MAX_PERMITIDO;
 import static com.bindord.eureka.keycloak.util.Enums.Msg.RESOURCE_NOT_FOUND;
 import static com.bindord.eureka.keycloak.util.Enums.ResponseCode.EX_JACKSON_INVALID_FORMAT;
@@ -122,5 +124,17 @@ public class ExceptionControllerAdvice {
         }
         return buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, EX_KEYCLOAK_EXCEPTION.get(), ex));
     }
+
+    @ExceptionHandler(NotAuthorizedException.class)
+    public @ResponseBody
+    ResponseEntity<Object> handleErrorByNotAuthorizedException(NotAuthorizedException ex) {
+        LOGGER.warn(ex.getMessage());
+        for (int i = 0; i < 21; i++) {
+            LOGGER.warn(ex.getStackTrace()[i].toString());
+        }
+        return buildResponseEntity(new ApiError(HttpStatus.UNAUTHORIZED, EX_KEYCLOAK_EXCEPTION.get(), ex));
+    }
+
+
 }
 
