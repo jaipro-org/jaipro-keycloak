@@ -29,31 +29,10 @@ public class UserRepository {
     @Value("${keycloak.realm}")
     private String realm;
 
-    @Value("${keycloak.credentials.secret}")
-    private String secretKey;
-    @Value("${keycloak.resource}")
-    private String clientId;
-    @Value("${keycloak.auth-server-url}")
-    private String authUrl;
-
     public UserToken authenticate(UserLogin user) {
-//        RealmResource realmResource = keycloak.realm(realm);
-//        var users = realmResource.users();
-//        users.list().forEach(user -> System.out.println(user.getEmail()));
-//        var clients = realmResource.clients();
-//        clients.findAll().forEach(cli -> System.out.println(cli.getId()));
 
-//        System.out.println(keycloak.tokenManager().getAccessTokenString());
-
-        String username = user.getEmail();//peterpaul.0194@gmail.com
-        String pwd = user.getPassword();//stalker147
-
-//        Keycloak instance = Keycloak.getInstance(
-//                authUrl,
-//                realm,
-//                username, pwd,
-//                clientId, secretKey);
-//        System.out.println(instance.tokenManager().getAccessTokenString());
+        String username = user.getEmail();
+        String pwd = user.getPassword();
 
         AuthzClient authzClient = AuthzClient.create();
         AccessTokenResponse response = authzClient.obtainAccessToken(username, pwd);
