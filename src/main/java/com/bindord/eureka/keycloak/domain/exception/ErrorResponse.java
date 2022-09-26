@@ -1,5 +1,12 @@
 package com.bindord.eureka.keycloak.domain.exception;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ErrorResponse {
 
     private String message;
@@ -12,18 +19,6 @@ public class ErrorResponse {
     public ErrorResponse(String message, String code) {
         this.message = message;
         this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getCode() {
-        return code;
     }
 
 }
