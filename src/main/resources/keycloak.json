@@ -1,0 +1,8 @@
+{
+  "realm": "eureka",
+  "auth-server-url" : "http://host.docker.internal:30010/auth",
+  "resource" : "eureka-client-credentials-cli",
+  "credentials": {
+    "secret": "G1YWQqnlyAEImeHpabt38klbtde1VgqM"
+  }
+}
