@@ -90,4 +90,9 @@ public class UserServiceImpl implements UserService {
     public String doChangePassword(PasswordDTO objPass) throws CustomValidationException {
         return null;
     }
+
+    @Override
+    public String deleteAllUsers() {
+        return repository.deleteAllUsers();
+    }
 }

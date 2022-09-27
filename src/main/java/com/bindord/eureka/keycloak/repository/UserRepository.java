@@ -5,6 +5,7 @@ import com.bindord.eureka.keycloak.domain.request.EurekaUser;
 import com.bindord.eureka.keycloak.domain.request.UserLogin;
 import com.bindord.eureka.keycloak.domain.response.UserToken;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.authorization.client.AuthzClient;
@@ -21,6 +22,7 @@ import javax.ws.rs.core.Response;
 import java.util.Arrays;
 
 @Repository
+@Slf4j
 public class UserRepository {
 
     @Autowired
@@ -65,5 +67,18 @@ public class UserRepository {
         var errDetail = response.readEntity(String.class);
         throw new CustomValidationException(errDetail);
 
+    }
+
+    public String deleteAllUsers() {
+        RealmResource realmResource = keycloak.realm(realm);
+        //GET TOTAL USERS
+        // --> realmResource.users().count());
+        //LIST USERS WHITIN RANGE (INIT, MAX)
+        // --> realmResource.users().list(from, until)
+        realmResource.users().list(0, realmResource.users().count()).forEach(user -> {
+            realmResource.users().delete(user.getId());
+            log.info("User deleted with ID {}", user.getId());
+        });
+        return "OK";
     }
 }

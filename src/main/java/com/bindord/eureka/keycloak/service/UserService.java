@@ -28,4 +28,6 @@ public interface UserService extends BaseService<User, UUID> {
     String initRecoverPass(String username) throws CustomValidationException, NotFoundValidationException;
 
     String doChangePassword(PasswordDTO passwordDTO) throws CustomValidationException;
+
+    String deleteAllUsers();
 }
