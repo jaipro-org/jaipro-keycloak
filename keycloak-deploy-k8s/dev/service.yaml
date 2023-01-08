@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: jaipro
+  name: keycloak
+  labels:
+    run: keycloak
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+      nodePort: 30010
+  selector:
+    run: keycloak
+  type: LoadBalancer
+status:
+  loadBalancer: {}
