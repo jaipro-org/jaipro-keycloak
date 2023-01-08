@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: jaipro
+  labels:
+    run: keycloak
+    environment: dev
+  name: keycloak
+spec:
+  selector:
+    matchLabels:
+      run: keycloak
+  template:
+    metadata:
+      labels:
+        run: keycloak
+    spec:
+      containers:
+        - image: jboss/keycloak:latest
+          name: keycloak
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 200m
+              memory: 500Mi
+            limits:
+              cpu: 300m
+              memory: 1000Mi
+          env:
+            - name: DB_VENDOR
+              value: postgres
+            - name: DB_ADDR
+              value: 10.94.0.3
+            - name: DB_DATABASE
+              value: keycloak_dev
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  key: keycloak.db.user
+                  name: keycloak-credentials
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: keycloak.db.pwd
+                  name: keycloak-credentials
+            - name: KEYCLOAK_USER
+              valueFrom:
+                secretKeyRef:
+                  key: keycloak.user
+                  name: keycloak-credentials
+            - name: KEYCLOAK_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: keycloak.user.pwd
+                  name: keycloak-credentials
+            - name: KEYCLOAK_LOGLEVEL
+              value: INFO
+            - name: WILDFLY_LOGLEVEL
+              value: INFO
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always

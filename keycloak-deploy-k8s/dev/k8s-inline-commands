@@ -1,0 +1,6 @@
+# TO GENERATE SECRET YAML
+kdry create secret generic keycloak-credentials
+--from-literal keycloak.user=admin
+--from-literal keycloak.user.pwd=admin
+--from-literal keycloak.db.user=appuser
+--from-literal keycloak.db.pwd=passsword
