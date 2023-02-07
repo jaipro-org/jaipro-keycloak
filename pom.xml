@@ -103,6 +103,19 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <to>
+                        <image>gcr.io/ancient-lattice-373518/${project.name}</image>
+                    </to>
+                    <container>
+                        <mainClass>${project.groupId}.${project.artifactId}.EurekaKeycloakApplication</mainClass>
+                    </container>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

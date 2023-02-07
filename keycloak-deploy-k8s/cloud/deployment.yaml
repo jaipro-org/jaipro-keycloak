@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jaipro-keycloak
+  labels:
+    service: jaipro-keycloak
+    app: jaipro
+    type: backend
+    consume: auth-server-keycloak
+    db: none
+  namespace: jaipro
+spec:
+  selector:
+    matchLabels:
+      service: jaipro-keycloak
+      type: backend
+  template:
+    metadata:
+      name: jaipro-keycloak
+      labels:
+        service: jaipro-keycloak
+        type: backend
+    spec:
+      serviceAccountName: jaipro-sa
+      containers:
+        - name: jaipro-keycloak
+          image: gcr.io/ancient-lattice-373518/eureka-keycloak
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: netty-port
+          resources:
+            requests:
+              cpu: 200m
+              memory: 200Mi
+            limits:
+              memory: 700Mi
+              cpu: 300m
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8090
+            initialDelaySeconds: 80
+            periodSeconds: 10
+            failureThreshold: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8090
+            initialDelaySeconds: 80
+            periodSeconds: 10
+            failureThreshold: 5
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 50%
+      maxSurge: 50%

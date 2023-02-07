@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev
+    active: gcp-dev
   thymeleaf:
     cache: false
     encoding: UTF-8

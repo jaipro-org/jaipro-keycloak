@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jaipro-keycloak
+  namespace: jaipro
+spec:
+  type: LoadBalancer
+  ports:
+    - targetPort: 8090
+      port: 8080
+      nodePort: 31081
+  selector:
+    service: jaipro-keycloak
+    type: backend
