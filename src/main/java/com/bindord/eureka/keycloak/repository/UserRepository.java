@@ -9,11 +9,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.authorization.client.AuthzClient;
+import org.keycloak.authorization.client.Configuration;
+import org.keycloak.authorization.client.util.Http;
 import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
@@ -25,8 +26,14 @@ import java.util.Arrays;
 @Slf4j
 public class UserRepository {
 
-    @Autowired
-    private Keycloak keycloak;
+    private final Keycloak keycloak;
+
+    private final Configuration keycloakConfig;
+
+    public UserRepository(Keycloak keycloak, Configuration keycloakConfig) {
+        this.keycloak = keycloak;
+        this.keycloakConfig = keycloakConfig;
+    }
 
     @Value("${keycloak.realm}")
     private String realm;
@@ -36,7 +43,7 @@ public class UserRepository {
         String username = user.getEmail();
         String pwd = user.getPassword();
 
-        AuthzClient authzClient = AuthzClient.create();
+        AuthzClient authzClient = AuthzClient.create(keycloakConfig);
         AccessTokenResponse response = authzClient.obtainAccessToken(username, pwd);
         var userToken = new UserToken();
         BeanUtils.copyProperties(response, userToken);
@@ -67,6 +74,31 @@ public class UserRepository {
         var errDetail = response.readEntity(String.class);
         throw new CustomValidationException(errDetail);
 
+    }
+
+    public UserToken refreshToken(String refreshToken) {
+        AuthzClient authzClient = AuthzClient.create(keycloakConfig);
+        String url = keycloakConfig.getAuthServerUrl() + "/realms/" + keycloakConfig.getRealm() + "/protocol/openid-connect/token";
+        String clientId = keycloakConfig.getResource();
+        String secret = (String) keycloakConfig.getCredentials().get("secret");
+        Http http = new Http(authzClient.getConfiguration(), (params, headers) -> {
+        });
+
+        AccessTokenResponse accessTokenResponse = http.<AccessTokenResponse>post(url)
+                .authentication()
+                .client()
+                .form()
+                .param("grant_type", "refresh_token")
+                .param("refresh_token", refreshToken)
+                .param("client_id", clientId)
+                .param("client_secret", secret)
+                .response()
+                .json(AccessTokenResponse.class)
+                .execute();
+
+        var userToken = new UserToken();
+        BeanUtils.copyProperties(accessTokenResponse, userToken);
+        return userToken;
     }
 
     public String deleteAllUsers() {

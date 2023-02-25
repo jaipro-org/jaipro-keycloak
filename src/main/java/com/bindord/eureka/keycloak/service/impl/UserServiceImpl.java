@@ -31,13 +31,52 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User save(User entity) throws NotFoundValidationException, CustomValidationException {
-        return null;
+    public UserToken doRefreshToken(String refreshToken) {
+        return repository.refreshToken(refreshToken);
+    }
+
+    @Override
+    public List<UserRepresentation> getAll() {
+        return userAdminRepository.findAll();
     }
 
     @Override
     public UserRepresentation save(EurekaUser user) throws CustomValidationException {
         return repository.save(user);
+    }
+
+    @Override
+    public String deleteAllUsers() {
+        return repository.deleteAllUsers();
+    }
+
+    @Override
+    public List<User> findAll() {
+        return null;
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return null;
+    }
+
+    @Override
+    public void updatePasswordById(UUID id, String nuevaPass) {
+    }
+
+    @Override
+    public String initRecoverPass(String username) throws CustomValidationException, NotFoundValidationException {
+        return null;
+    }
+
+    @Override
+    public String doChangePassword(PasswordDTO objPass) throws CustomValidationException {
+        return null;
+    }
+
+    @Override
+    public User save(User entity) throws NotFoundValidationException, CustomValidationException {
+        return null;
     }
 
     @Override
@@ -58,41 +97,5 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete() {
 
-    }
-
-    @Override
-    public List<User> findAll() {
-        return null;
-    }
-
-    //TEMP TEST
-    @Override
-    public List<UserRepresentation> getAll() {
-        return userAdminRepository.findAll();
-    }
-
-    @Override
-    public User findByUsername(String username) {
-        return null;
-    }
-
-    @Override
-    public void updatePasswordById(UUID id, String nuevaPass) {
-//        repository.updatePasswordById(id, new BCryptPasswordEncoder().encode(nuevaPass));
-    }
-
-    @Override
-    public String initRecoverPass(String username) throws CustomValidationException, NotFoundValidationException {
-        return null;
-    }
-
-    @Override
-    public String doChangePassword(PasswordDTO objPass) throws CustomValidationException {
-        return null;
-    }
-
-    @Override
-    public String deleteAllUsers() {
-        return repository.deleteAllUsers();
     }
 }

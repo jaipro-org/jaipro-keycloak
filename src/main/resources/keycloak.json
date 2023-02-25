@@ -1,8 +1,0 @@
-{
-  "realm": "eureka",
-  "auth-server-url" : "http://34.71.32.155:8080/auth",
-  "resource" : "eureka-client-credentials-cli",
-  "credentials": {
-    "secret": "G1YWQqnlyAEImeHpabt38klbtde1VgqM"
-  }
-}

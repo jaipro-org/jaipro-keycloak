@@ -1,6 +1,7 @@
 package com.bindord.eureka.keycloak.controller;
 
 import com.bindord.eureka.keycloak.advice.NotFoundValidationException;
+import com.bindord.eureka.keycloak.domain.request.RefreshToken;
 import com.bindord.eureka.keycloak.domain.request.UserLogin;
 import com.bindord.eureka.keycloak.domain.response.UserToken;
 import com.bindord.eureka.keycloak.service.UserService;
@@ -30,6 +31,11 @@ public class AuthController {
     @PostMapping("")
     public UserToken doAuthenticate(@Valid @RequestBody UserLogin user) throws NotFoundValidationException {
         return userService.doAuthenticate(user);
+    }
+
+    @PostMapping("/refresh-token")
+    public UserToken doRefreshToken(@Valid @RequestBody RefreshToken refreshToken) throws NotFoundValidationException {
+        return userService.doRefreshToken(refreshToken.getRefreshToken());
     }
 
 

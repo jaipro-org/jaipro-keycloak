@@ -8,6 +8,7 @@ import com.bindord.eureka.keycloak.domain.request.EurekaUser;
 import com.bindord.eureka.keycloak.domain.request.UserLogin;
 import com.bindord.eureka.keycloak.domain.response.UserToken;
 import com.bindord.eureka.keycloak.generic.BaseService;
+import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.UserRepresentation;
 
 import java.util.List;
@@ -18,6 +19,8 @@ public interface UserService extends BaseService<User, UUID> {
     List<UserRepresentation> getAll();
 
     UserToken doAuthenticate(UserLogin user);
+
+    UserToken doRefreshToken(String refreshToken);
 
     User findByUsername(String username);
 

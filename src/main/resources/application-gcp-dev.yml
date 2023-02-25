@@ -1,0 +1,7 @@
+spring:
+  # GCP Secret Manager
+  cloud:
+    gcp:
+      secretmanager:
+        enabled: true
+        project-id: ${cloud.gcp.project-id}
