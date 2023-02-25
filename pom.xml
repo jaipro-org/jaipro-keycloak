@@ -15,6 +15,7 @@
     <description>eureka-keycloak</description>
     <properties>
         <java.version>11</java.version>
+        <gcp-project-id>ancient-lattice-373518</gcp-project-id>
     </properties>
     <dependencies>
         <!-- Exclude Spring Boot's Default Logging -->
@@ -115,8 +116,11 @@
                 <artifactId>jib-maven-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
+                    <from>
+                        <image>gcr.io/${gcp-project-id}/ms-base-image</image>
+                    </from>
                     <to>
-                        <image>gcr.io/ancient-lattice-373518/${project.name}</image>
+                        <image>gcr.io/${gcp-project-id}/${project.name}</image>
                     </to>
                     <container>
                         <mainClass>${project.groupId}.${project.artifactId}.EurekaKeycloakApplication</mainClass>

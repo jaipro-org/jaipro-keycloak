@@ -22,6 +22,14 @@ import org.springframework.stereotype.Repository;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
 
+import static com.bindord.eureka.keycloak.util.Constants.OAUTH2_CLIENT_ID;
+import static com.bindord.eureka.keycloak.util.Constants.OAUTH2_CLIENT_SECRET;
+import static com.bindord.eureka.keycloak.util.Constants.OAUTH2_GRANT_TYPE;
+import static com.bindord.eureka.keycloak.util.Constants.OAUTH2_GRANT_TYPE_RT;
+import static com.bindord.eureka.keycloak.util.Constants.OAUTH2_SECRET;
+import static com.bindord.eureka.keycloak.util.Constants.OAUTH2_URI_REALMS;
+import static com.bindord.eureka.keycloak.util.Constants.OAUTH2_URI_TOKEN_OPERATION;
+
 @Repository
 @Slf4j
 public class UserRepository {
@@ -73,14 +81,19 @@ public class UserRepository {
         }
         var errDetail = response.readEntity(String.class);
         throw new CustomValidationException(errDetail);
-
     }
 
     public UserToken refreshToken(String refreshToken) {
         AuthzClient authzClient = AuthzClient.create(keycloakConfig);
-        String url = keycloakConfig.getAuthServerUrl() + "/realms/" + keycloakConfig.getRealm() + "/protocol/openid-connect/token";
+
+        String url = new StringBuilder(
+                keycloakConfig.getAuthServerUrl())
+                .append(OAUTH2_URI_REALMS)
+                .append(keycloakConfig.getRealm())
+                .append(OAUTH2_URI_TOKEN_OPERATION).toString();
+
         String clientId = keycloakConfig.getResource();
-        String secret = (String) keycloakConfig.getCredentials().get("secret");
+        String secret = (String) keycloakConfig.getCredentials().get(OAUTH2_SECRET);
         Http http = new Http(authzClient.getConfiguration(), (params, headers) -> {
         });
 
@@ -88,10 +101,10 @@ public class UserRepository {
                 .authentication()
                 .client()
                 .form()
-                .param("grant_type", "refresh_token")
-                .param("refresh_token", refreshToken)
-                .param("client_id", clientId)
-                .param("client_secret", secret)
+                .param(OAUTH2_GRANT_TYPE, OAUTH2_GRANT_TYPE_RT)
+                .param(OAUTH2_GRANT_TYPE_RT, refreshToken)
+                .param(OAUTH2_CLIENT_ID, clientId)
+                .param(OAUTH2_CLIENT_SECRET, secret)
                 .response()
                 .json(AccessTokenResponse.class)
                 .execute();
@@ -111,6 +124,6 @@ public class UserRepository {
             realmResource.users().delete(user.getId());
             log.info("User deleted with ID {}", user.getId());
         });
-        return "OK";
+        return HttpStatus.OK.toString();
     }
 }
