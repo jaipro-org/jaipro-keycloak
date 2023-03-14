@@ -35,8 +35,8 @@ public class ExceptionControllerAdvice {
 
     private static final Logger LOGGER = LogManager.getLogger(ExceptionControllerAdvice.class);
 
-    private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
-        return new ResponseEntity<>(apiError, apiError.getStatus());
+    private ResponseEntity<Object> buildResponseEntity(ApiError apiError, HttpStatus httpStatus) {
+        return new ResponseEntity<>(apiError, httpStatus);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -109,7 +109,7 @@ public class ExceptionControllerAdvice {
         for (int i = 0; i < 10; i++) {
             LOGGER.warn(ex.getStackTrace()[i].toString());
         }
-        return buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, EX_JACKSON_INVALID_FORMAT.get(), ex));
+        return buildResponseEntity(new ApiError(EX_JACKSON_INVALID_FORMAT.get(), ex), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(HttpResponseException.class)
@@ -119,10 +119,10 @@ public class ExceptionControllerAdvice {
         for (int i = 0; i < 10; i++) {
             LOGGER.warn(ex.getStackTrace()[i].toString());
         }
-        if(ex.getStatusCode() == HttpStatus.UNAUTHORIZED.value()) {
-            return buildResponseEntity(new ApiError(HttpStatus.UNAUTHORIZED, EX_KEYCLOAK_EXCEPTION.get(), ex));
+        if (ex.getStatusCode() == HttpStatus.UNAUTHORIZED.value()) {
+            return buildResponseEntity(new ApiError(EX_KEYCLOAK_EXCEPTION.get(), ex), HttpStatus.UNAUTHORIZED);
         }
-        return buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, EX_KEYCLOAK_EXCEPTION.get(), ex));
+        return buildResponseEntity(new ApiError(EX_KEYCLOAK_EXCEPTION.get(), ex), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NotAuthorizedException.class)
@@ -132,7 +132,7 @@ public class ExceptionControllerAdvice {
         for (int i = 0; i < 21; i++) {
             LOGGER.warn(ex.getStackTrace()[i].toString());
         }
-        return buildResponseEntity(new ApiError(HttpStatus.UNAUTHORIZED, EX_KEYCLOAK_EXCEPTION.get(), ex));
+        return buildResponseEntity(new ApiError(EX_KEYCLOAK_EXCEPTION.get(), ex), HttpStatus.UNAUTHORIZED);
     }
 
 

@@ -25,14 +25,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     public final Logger LOGGER = LogManager.getLogger(RestExceptionHandler.class);
 
-    private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
-        return new ResponseEntity<>(apiError, apiError.getStatus());
+    private ResponseEntity<Object> buildResponseEntity(ApiError apiError, HttpStatus httpStatus) {
+        return new ResponseEntity<>(apiError, httpStatus);
     }
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String error = "Malformed JSON request";
-        return buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, error, ex));
+        return buildResponseEntity(new ApiError(error, ex), HttpStatus.BAD_REQUEST);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             LOGGER.warn(appError.toString());
             errors.add(appError);
         }
-        return buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, error, ex, errors));
+        return buildResponseEntity(new ApiError(error, ex, errors), HttpStatus.BAD_REQUEST);
     }
 
     @Override
@@ -56,12 +56,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         for (FieldError x : ex.getBindingResult().getFieldErrors()) {
             errors.add(new ApiSubError(x.getObjectName(), x.getField(), x.getRejectedValue(), x.getDefaultMessage()));
         }
-        return buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, error, errors));
+        return buildResponseEntity(new ApiError(error, errors), HttpStatus.BAD_REQUEST);
     }
 
     @Override
     protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String error = "Handle missing servlet request parameter";
-        return buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, error, ex));
+        return buildResponseEntity(new ApiError(error, ex), HttpStatus.BAD_REQUEST);
     }
 }

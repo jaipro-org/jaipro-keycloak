@@ -13,6 +13,7 @@ import org.keycloak.authorization.client.Configuration;
 import org.keycloak.authorization.client.util.Http;
 import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.ErrorRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
+import java.util.List;
 
 import static com.bindord.eureka.keycloak.util.Constants.OAUTH2_CLIENT_ID;
 import static com.bindord.eureka.keycloak.util.Constants.OAUTH2_CLIENT_SECRET;
@@ -68,7 +70,7 @@ public class UserRepository {
         credential.setValue(eurekaUser.getPassword());
         credential.setTemporary(false);
 
-        userRepresentation.setCredentials(Arrays.asList(credential));
+        userRepresentation.setCredentials(List.of(credential));
         userRepresentation.setEnabled(true);
 
         Response response = realmResource.users().create(userRepresentation);
@@ -79,8 +81,8 @@ public class UserRepository {
             userRepresentation.setId(userId);
             return userRepresentation;
         }
-        var errDetail = response.readEntity(String.class);
-        throw new CustomValidationException(errDetail);
+        var errDetail = response.readEntity(ErrorRepresentation.class);
+        throw new CustomValidationException(errDetail.getErrorMessage());
     }
 
     public UserToken refreshToken(String refreshToken) {
