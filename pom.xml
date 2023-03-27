@@ -11,8 +11,8 @@
     <groupId>com.bindord.eureka</groupId>
     <artifactId>keycloak</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>eureka-keycloak</name>
-    <description>eureka-keycloak</description>
+    <name>jaipro-keycloak</name>
+    <description>jaipro-keycloak</description>
     <properties>
         <java.version>11</java.version>
         <gcp-project-id>ancient-lattice-373518</gcp-project-id>
