@@ -90,8 +90,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(UUID id) {
-
+    public void delete(UUID id) throws CustomValidationException {
+        repository.deleteByUserId(id.toString());
     }
 
     @Override

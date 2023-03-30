@@ -128,4 +128,16 @@ public class UserRepository {
         });
         return HttpStatus.OK.toString();
     }
+
+    public void deleteByUserId(String userId) throws CustomValidationException {
+        RealmResource realmResource = keycloak.realm(realm);
+        Response response = realmResource.users().delete(userId);
+        var resCode = response.getStatus();
+        if (resCode == HttpStatus.OK.value() || resCode == HttpStatus.NO_CONTENT.value()) {
+            log.info("User deleted with ID {}", userId);
+            return;
+        }
+        log.info("Error trying removing user with ID {}", userId);
+        throw new CustomValidationException("Error trying operation");
+    }
 }

@@ -13,7 +13,7 @@ public interface BaseService<T, V> {
 
     T findOne(V id) throws NotFoundValidationException;
 
-    void delete(V id);
+    void delete(V id) throws CustomValidationException;
 
     void delete();
 
