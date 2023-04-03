@@ -16,7 +16,7 @@ spec:
         run: keycloak
     spec:
       containers:
-        - image: jboss/keycloak:16.1.1
+        - image: jboss/keycloak:16.1.0
           name: keycloak
           ports:
             - containerPort: 8080
