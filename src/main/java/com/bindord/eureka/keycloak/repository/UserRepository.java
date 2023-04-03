@@ -1,6 +1,7 @@
 package com.bindord.eureka.keycloak.repository;
 
 import com.bindord.eureka.keycloak.advice.CustomValidationException;
+import com.bindord.eureka.keycloak.domain.dto.PasswordDTO;
 import com.bindord.eureka.keycloak.domain.request.EurekaUser;
 import com.bindord.eureka.keycloak.domain.request.UserLogin;
 import com.bindord.eureka.keycloak.domain.response.UserToken;
@@ -132,6 +133,7 @@ public class UserRepository {
     public void deleteByUserId(String userId) throws CustomValidationException {
         RealmResource realmResource = keycloak.realm(realm);
         Response response = realmResource.users().delete(userId);
+
         var resCode = response.getStatus();
         if (resCode == HttpStatus.OK.value() || resCode == HttpStatus.NO_CONTENT.value()) {
             log.info("User deleted with ID {}", userId);
@@ -139,5 +141,18 @@ public class UserRepository {
         }
         log.info("Error trying removing user with ID {}", userId);
         throw new CustomValidationException("Error trying operation");
+    }
+
+    public String updateUserPassword(PasswordDTO eurekaUser) throws CustomValidationException {
+        RealmResource realmResource = keycloak.realm(realm);
+
+        CredentialRepresentation credential = new CredentialRepresentation();
+
+        UserRepresentation userRepresentation = new UserRepresentation();
+        credential.setType(CredentialRepresentation.PASSWORD);
+        credential.setValue(eurekaUser.getNwPassword());
+        credential.setTemporary(false);
+        realmResource.users().get(eurekaUser.getUserId()).update(userRepresentation);
+        return HttpStatus.OK.toString();
     }
 }

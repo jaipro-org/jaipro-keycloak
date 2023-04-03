@@ -70,8 +70,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String doChangePassword(PasswordDTO objPass) throws CustomValidationException {
-        return null;
+    public String doChangePassword(PasswordDTO user) throws CustomValidationException {
+        return repository.updateUserPassword(user);
     }
 
     @Override

@@ -16,7 +16,7 @@ spec:
         run: keycloak
     spec:
       containers:
-        - image: jboss/keycloak:latest
+        - image: jboss/keycloak:16.1.1
           name: keycloak
           ports:
             - containerPort: 8080
@@ -31,9 +31,9 @@ spec:
             - name: DB_VENDOR
               value: postgres
             - name: DB_ADDR
-              value: 10.94.0.3
+              value: 10.60.48.3
             - name: DB_DATABASE
-              value: keycloak_dev
+              value: keycloak
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
