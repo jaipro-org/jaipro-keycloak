@@ -15,7 +15,7 @@
     <description>jaipro-keycloak</description>
     <properties>
         <java.version>11</java.version>
-        <gcp-project-id>ancient-lattice-373518</gcp-project-id>
+        <gcp-project-id>pure-anthem-382602</gcp-project-id>
     </properties>
     <dependencies>
         <!-- Exclude Spring Boot's Default Logging -->

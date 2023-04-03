@@ -12,14 +12,7 @@
         <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </Console>
-        <!--<File name="AppFileAppender" fileName="${LOG_PATH}/app.log">
-            <PatternLayout>
-                <pattern>
-                    [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
-                </pattern>
-            </PatternLayout>
-        </File>-->
-        <RollingFile
+        <!--<RollingFile
                 name="AppFileAppender"
                 fileName="${LOG_PATH}/app.log"
                 filePattern="${LOG_PATH}/$${date:yyyy-MM}/app.%d{yyyy-MM-dd}.log.gz"
@@ -34,11 +27,11 @@
                 <SizeBasedTriggeringPolicy size="10MB"/>
             </Policies>
             <DefaultRolloverStrategy max="5" />
-        </RollingFile>
+        </RollingFile>-->
     </Appenders>
     <Loggers>
         <Logger name="com.bindord.eureka.keycloak.aop" level="info" additivity="false">
-            <AppenderRef ref="AppFileAppender"/>
+            <!--<AppenderRef ref="AppFileAppender"/>-->
             <AppenderRef ref="ConsoleAppender"/>
         </Logger>
         <Logger name="com.bindord.eureka.keycloak.service.impl" level="warn" additivity="false">
