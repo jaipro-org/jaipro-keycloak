@@ -13,7 +13,6 @@ import javax.validation.constraints.Size;
 @Getter
 public class UserPasswordDTO {
 
-
     @NotBlank
     @Size(min = 7, max = 40)
     private String currentPassword;
