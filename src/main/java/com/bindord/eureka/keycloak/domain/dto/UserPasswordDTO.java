@@ -7,7 +7,7 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Setter
 @Getter
-public class PasswordDTO {
+public class UserPasswordDTO {
 
     private String nwPassword;
     private String userId;

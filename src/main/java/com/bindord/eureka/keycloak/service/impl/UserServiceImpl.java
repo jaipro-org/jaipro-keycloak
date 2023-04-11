@@ -3,7 +3,7 @@ package com.bindord.eureka.keycloak.service.impl;
 import com.bindord.eureka.keycloak.advice.CustomValidationException;
 import com.bindord.eureka.keycloak.advice.NotFoundValidationException;
 import com.bindord.eureka.keycloak.domain.User;
-import com.bindord.eureka.keycloak.domain.dto.PasswordDTO;
+import com.bindord.eureka.keycloak.domain.dto.UserPasswordDTO;
 import com.bindord.eureka.keycloak.domain.request.EurekaUser;
 import com.bindord.eureka.keycloak.domain.request.UserLogin;
 import com.bindord.eureka.keycloak.domain.response.UserToken;
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String doChangePassword(PasswordDTO user) throws CustomValidationException {
+    public String doChangePassword(UserPasswordDTO user) throws CustomValidationException {
         return repository.updateUserPassword(user);
     }
 

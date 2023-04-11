@@ -1,7 +1,7 @@
 package com.bindord.eureka.keycloak.repository;
 
 import com.bindord.eureka.keycloak.advice.CustomValidationException;
-import com.bindord.eureka.keycloak.domain.dto.PasswordDTO;
+import com.bindord.eureka.keycloak.domain.dto.UserPasswordDTO;
 import com.bindord.eureka.keycloak.domain.request.EurekaUser;
 import com.bindord.eureka.keycloak.domain.request.UserLogin;
 import com.bindord.eureka.keycloak.domain.response.UserToken;
@@ -9,6 +9,7 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.authorization.client.AuthzClient;
 import org.keycloak.authorization.client.Configuration;
 import org.keycloak.authorization.client.util.Http;
@@ -143,7 +144,7 @@ public class UserRepository {
         throw new CustomValidationException("Error trying operation");
     }
 
-    public String updateUserPassword(PasswordDTO eurekaUser) throws CustomValidationException {
+    public String updateUserPassword(UserPasswordDTO eurekaUser) throws CustomValidationException {
         RealmResource realmResource = keycloak.realm(realm);
 
         CredentialRepresentation credential = new CredentialRepresentation();
@@ -152,7 +153,9 @@ public class UserRepository {
         credential.setType(CredentialRepresentation.PASSWORD);
         credential.setValue(eurekaUser.getNwPassword());
         credential.setTemporary(false);
-        realmResource.users().get(eurekaUser.getUserId()).update(userRepresentation);
+        userRepresentation.setCredentials(List.of(credential));
+        UserResource userResource = realmResource.users().get(eurekaUser.getUserId());
+        userResource.update(userRepresentation);
         return HttpStatus.OK.toString();
     }
 }
