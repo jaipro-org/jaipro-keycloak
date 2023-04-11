@@ -3,7 +3,7 @@ package com.bindord.eureka.keycloak.service.impl;
 import com.bindord.eureka.keycloak.advice.CustomValidationException;
 import com.bindord.eureka.keycloak.advice.NotFoundValidationException;
 import com.bindord.eureka.keycloak.domain.User;
-import com.bindord.eureka.keycloak.domain.dto.PasswordDTO;
+import com.bindord.eureka.keycloak.domain.dto.UserPasswordDTO;
 import com.bindord.eureka.keycloak.domain.request.EurekaUser;
 import com.bindord.eureka.keycloak.domain.request.UserLogin;
 import com.bindord.eureka.keycloak.domain.response.UserToken;
@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+
+import static com.bindord.eureka.keycloak.util.Constants.ERROR_MESSAGE_INVALID_USER_CREDENTIALS;
+import static com.bindord.eureka.keycloak.util.Constants.ERROR_MESSAGE_SAME_NEW_PWD;
 
 @Service
 @AllArgsConstructor
@@ -70,7 +73,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String doChangePassword(PasswordDTO user) throws CustomValidationException {
+    public String doChangePassword(UserPasswordDTO user) throws CustomValidationException {
+        if (user.getCurrentPassword().equals(user.getNwPassword())) {
+            throw new CustomValidationException(ERROR_MESSAGE_SAME_NEW_PWD);
+        }
+        var userValidate = new UserLogin();
+        userValidate.setEmail(user.getUsername());
+        userValidate.setPassword(user.getCurrentPassword());
+        try {
+            this.doAuthenticate(userValidate);
+        } catch (Exception exception) {
+            throw new CustomValidationException(ERROR_MESSAGE_INVALID_USER_CREDENTIALS);
+        }
         return repository.updateUserPassword(user);
     }
 

@@ -10,4 +10,8 @@ public class Constants {
     public static final String OAUTH2_URI_REALMS = "/realms/";
     public static final String OAUTH2_SECRET = "secret";
 
+    public static final String ERROR_MESSAGE_INVALID_USER_CREDENTIALS = "La validacion de usuario y password ha fallado";
+    public static final String ERROR_MESSAGE_SAME_NEW_PWD = "La nueva password no puede ser la misma que la actual";
+
+
 }
