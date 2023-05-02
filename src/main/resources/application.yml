@@ -13,7 +13,7 @@ spring:
   mail:
     host: smtp.gmail.com
     username: contoso.peru@gmail.com
-    password: p1ls3n@1477
+    password: ${sm://projects/${spring.cloud.gcp.secretmanager.project-id}/secrets/EMAIL_JAIPRO_APP_PASSWORD}
     port: 587
     properties:
       mail:
