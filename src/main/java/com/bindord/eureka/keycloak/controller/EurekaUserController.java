@@ -1,6 +1,7 @@
 package com.bindord.eureka.keycloak.controller;
 
 import com.bindord.eureka.keycloak.advice.CustomValidationException;
+import com.bindord.eureka.keycloak.domain.dto.UpdatePasswordDTO;
 import com.bindord.eureka.keycloak.domain.dto.UserPasswordDTO;
 import com.bindord.eureka.keycloak.domain.request.EurekaUser;
 import com.bindord.eureka.keycloak.service.UserService;
@@ -36,7 +37,12 @@ public class EurekaUserController {
 
     @PutMapping("/updatePassword")
     public void updateUserPasswordById(@Valid @RequestBody UserPasswordDTO userPassword) throws CustomValidationException {
-        userService.doChangePassword(userPassword);
+        userService.doChangePasswordWithPwdValidation(userPassword);
+    }
+
+    @PutMapping("/updatePassword/direct")
+    public void updateUserPasswordDirectById(@Valid @RequestBody UpdatePasswordDTO updatePasswordDTO) throws CustomValidationException {
+        userService.doChangePasswordDirectly(updatePasswordDTO);
     }
 
 

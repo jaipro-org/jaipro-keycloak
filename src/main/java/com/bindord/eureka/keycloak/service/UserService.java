@@ -3,6 +3,7 @@ package com.bindord.eureka.keycloak.service;
 import com.bindord.eureka.keycloak.advice.CustomValidationException;
 import com.bindord.eureka.keycloak.advice.NotFoundValidationException;
 import com.bindord.eureka.keycloak.domain.User;
+import com.bindord.eureka.keycloak.domain.dto.UpdatePasswordDTO;
 import com.bindord.eureka.keycloak.domain.dto.UserPasswordDTO;
 import com.bindord.eureka.keycloak.domain.request.EurekaUser;
 import com.bindord.eureka.keycloak.domain.request.UserLogin;
@@ -29,7 +30,9 @@ public interface UserService extends BaseService<User, UUID> {
 
     String initRecoverPass(String username) throws CustomValidationException, NotFoundValidationException;
 
-    String doChangePassword(UserPasswordDTO userPasswordDTO) throws CustomValidationException;
+    String doChangePasswordWithPwdValidation(UserPasswordDTO userPasswordDTO) throws CustomValidationException;
+
+    String doChangePasswordDirectly(UpdatePasswordDTO updatePasswordDTO) throws CustomValidationException;
 
     String deleteAllUsers();
 }

@@ -144,7 +144,7 @@ public class UserRepository {
         throw new CustomValidationException("Error trying operation");
     }
 
-    public String updateUserPassword(UserPasswordDTO eurekaUser) throws CustomValidationException {
+    public String updateUserPassword(UserPasswordDTO eurekaUser) {
         RealmResource realmResource = keycloak.realm(realm);
 
         CredentialRepresentation credential = new CredentialRepresentation();

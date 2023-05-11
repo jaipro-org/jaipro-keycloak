@@ -3,6 +3,7 @@ package com.bindord.eureka.keycloak.service.impl;
 import com.bindord.eureka.keycloak.advice.CustomValidationException;
 import com.bindord.eureka.keycloak.advice.NotFoundValidationException;
 import com.bindord.eureka.keycloak.domain.User;
+import com.bindord.eureka.keycloak.domain.dto.UpdatePasswordDTO;
 import com.bindord.eureka.keycloak.domain.dto.UserPasswordDTO;
 import com.bindord.eureka.keycloak.domain.request.EurekaUser;
 import com.bindord.eureka.keycloak.domain.request.UserLogin;
@@ -73,7 +74,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String doChangePassword(UserPasswordDTO user) throws CustomValidationException {
+    public String doChangePasswordWithPwdValidation(UserPasswordDTO user) throws CustomValidationException {
         if (user.getCurrentPassword().equals(user.getNwPassword())) {
             throw new CustomValidationException(ERROR_MESSAGE_SAME_NEW_PWD);
         }
@@ -86,6 +87,14 @@ public class UserServiceImpl implements UserService {
             throw new CustomValidationException(ERROR_MESSAGE_INVALID_USER_CREDENTIALS);
         }
         return repository.updateUserPassword(user);
+    }
+
+    @Override
+    public String doChangePasswordDirectly(UpdatePasswordDTO updatePassword) {
+        var userPass = new UserPasswordDTO();
+        userPass.setNwPassword(updatePassword.getNwPassword());
+        userPass.setUserId(updatePassword.getUserId());
+        return repository.updateUserPassword(userPass);
     }
 
     @Override
