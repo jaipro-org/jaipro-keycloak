@@ -4,7 +4,7 @@ metadata:
   name: jaipro-keycloak
   namespace: jaipro
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
     - targetPort: 8090
       port: 8080
