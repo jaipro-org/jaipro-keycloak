@@ -15,7 +15,7 @@
     <description>jaipro-keycloak</description>
     <properties>
         <java.version>11</java.version>
-        <gcp-project-id>verdant-cascade-390018</gcp-project-id>
+        <gcp-project-id>animated-graph-394415</gcp-project-id>
     </properties>
     <dependencies>
         <!-- Exclude Spring Boot's Default Logging -->

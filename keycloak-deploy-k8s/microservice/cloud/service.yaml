@@ -8,7 +8,7 @@ spec:
   ports:
     - targetPort: 8090
       port: 8080
-      nodePort: 31081
+      nodePort: 31089
   selector:
     service: jaipro-keycloak
     type: backend

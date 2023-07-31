@@ -24,7 +24,7 @@ spec:
       serviceAccountName: jaipro-sa
       containers:
         - name: jaipro-keycloak
-          image: gcr.io/verdant-cascade-390018/jaipro-keycloak
+          image: gcr.io/animated-graph-394415/jaipro-keycloak
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
