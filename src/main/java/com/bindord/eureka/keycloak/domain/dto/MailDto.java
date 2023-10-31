@@ -18,7 +18,7 @@ public class MailDto {
 
     @NotEmpty
     @Size(max = 2000)
-    private String body;
+    private String content;
 
     private Set<String> receivers;
 

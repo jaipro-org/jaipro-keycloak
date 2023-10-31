@@ -94,7 +94,7 @@ public class EmailServiceImpl extends EmailGeneric implements EmailService {
         MimeMessagePreparator preparator;
         try {
             //if(profile.equals("production")){
-            preparator = mimeMessagePreparator(mail.getSubject(), mail.getBody(), mail.getReceivers());
+            preparator = mimeMessagePreparator(mail.getSubject(), mail.getContent(), mail.getReceivers());
             emailSender.send(preparator);
             //}
         } catch (MailException ex) {
