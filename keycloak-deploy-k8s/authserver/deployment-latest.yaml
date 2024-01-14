@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  labels:
+    run: keycloak-quay
+    environment: dev
+  name: keycloak-quay
+spec:
+  selector:
+    matchLabels:
+      run: keycloak-quay
+  template:
+    metadata:
+      labels:
+        run: keycloak-quay
+    spec:
+      containers:
+        - image: quay.io/keycloak/keycloak:23.0
+          name: keycloak
+          ports:
+            - containerPort: 8080
+          args: ["start-dev", "--log-level", "INFO"]
+          env:
+            - name: KC_DB
+              value: "postgres"
+            - name: KC_DB_URL
+              value: jdbc:postgresql://192.168.18.6:5432/keycloak_quay
+            - name: KC_DB_USERNAME
+              value: postgres
+            - name: KC_DB_PASSWORD
+              value: "sql"
+            - name: KEYCLOAK_ADMIN
+              value: admin
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              value: admin
+            - name: KEYCLOAK_LOGLEVEL
+              value: DEBUG
+            - name: KC_HEALTH_ENABLED
+              value: "true"
+            - name: KC_METRICS_ENABLED
+              value: "true"
+            - name: KEYCLOAK_LOGLEVEL_ORG_KEYCLOAK
+              value: DEBUG
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
