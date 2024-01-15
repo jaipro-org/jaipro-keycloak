@@ -2,8 +2,8 @@ package com.bindord.eureka.keycloak.generic;
 
 import org.springframework.mail.javamail.MimeMessagePreparator;
 
-import javax.mail.Message;
-import javax.mail.internet.InternetAddress;
+import jakarta.mail.Message;
+import jakarta.mail.internet.InternetAddress;
 import java.util.Set;
 
 public abstract class EmailGeneric {

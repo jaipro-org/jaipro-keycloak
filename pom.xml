@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.6</version>
+        <version>3.2.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.bindord.eureka</groupId>
@@ -16,6 +16,11 @@
     <properties>
         <java.version>11</java.version>
         <gcp-project-id>rapid-access-410400</gcp-project-id>
+        <keycloak-admin-client.version>23.0.4</keycloak-admin-client.version>
+        <keycloak-authz-client.version>23.0.4</keycloak-authz-client.version>
+        <aspectjweaver.version>1.9.21</aspectjweaver.version>
+        <springdoc-openapi-starter-webmvc-ui.version>2.3.0</springdoc-openapi-starter-webmvc-ui.version>
+        <spring-cloud-gcp-starter-secretmanager.version>3.4.1</spring-cloud-gcp-starter-secretmanager.version>
     </properties>
     <dependencies>
         <!-- Exclude Spring Boot's Default Logging -->
@@ -53,18 +58,18 @@
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-admin-client</artifactId>
-            <version>17.0.1</version>
+            <version>${keycloak-admin-client.version}</version>
         </dependency>
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-authz-client</artifactId>
-            <version>17.0.1</version>
+            <version>${keycloak-authz-client.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
-            <version>1.9.9.1</version>
+            <version>${aspectjweaver.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-log4j2 -->
         <dependency>
@@ -76,12 +81,13 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-ui -->
+        <!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui -->
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.6.9</version>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc-openapi-starter-webmvc-ui.version}</version>
         </dependency>
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -92,7 +98,7 @@
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>spring-cloud-gcp-starter-secretmanager</artifactId>
-            <version>3.4.1</version>
+            <version>${spring-cloud-gcp-starter-secretmanager.version}</version>
         </dependency>
 
         <dependency>
@@ -122,7 +128,7 @@
                 <version>3.3.0</version>
                 <configuration>
                     <from>
-                        <image>gcr.io/${gcp-project-id}/ms-base-image</image>
+                        <image>gcr.io/${gcp-project-id}/ms-base-image:jdk-17</image>
                     </from>
                     <to>
                         <image>gcr.io/${gcp-project-id}/${project.name}</image>

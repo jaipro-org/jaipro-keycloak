@@ -1,16 +1,16 @@
 package com.bindord.eureka.keycloak.repository;
 
 import com.bindord.eureka.keycloak.advice.CustomValidationException;
+import com.bindord.eureka.keycloak.configuration.KeycloakManagement;
+import com.bindord.eureka.keycloak.configuration.KeycloakResolver;
 import com.bindord.eureka.keycloak.domain.dto.UserPasswordDTO;
 import com.bindord.eureka.keycloak.domain.request.EurekaUser;
 import com.bindord.eureka.keycloak.domain.request.UserLogin;
 import com.bindord.eureka.keycloak.domain.response.UserToken;
-import com.bindord.eureka.keycloak.generic.KeycloakClientIds;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
+import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
-import org.keycloak.admin.client.Keycloak;
+import org.apache.commons.lang3.StringUtils;
 import org.keycloak.admin.client.resource.ClientResource;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.RoleResource;
@@ -18,7 +18,9 @@ import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.authorization.client.AuthzClient;
 import org.keycloak.authorization.client.Configuration;
 import org.keycloak.authorization.client.util.Http;
+import org.keycloak.protocol.oidc.client.authentication.ClientIdAndSecretCredentialsProvider;
 import org.keycloak.representations.AccessTokenResponse;
+import org.keycloak.representations.adapters.config.AdapterConfig;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.ErrorRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
@@ -26,14 +28,14 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
-import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.bindord.eureka.keycloak.util.Constants.JAIPRO_MAPPER_GENERAL_PROFILE;
 import static com.bindord.eureka.keycloak.util.Constants.OAUTH2_CLIENT_ID;
 import static com.bindord.eureka.keycloak.util.Constants.OAUTH2_CLIENT_SECRET;
 import static com.bindord.eureka.keycloak.util.Constants.OAUTH2_GRANT_TYPE;
@@ -41,25 +43,29 @@ import static com.bindord.eureka.keycloak.util.Constants.OAUTH2_GRANT_TYPE_RT;
 import static com.bindord.eureka.keycloak.util.Constants.OAUTH2_SECRET;
 import static com.bindord.eureka.keycloak.util.Constants.OAUTH2_URI_REALMS;
 import static com.bindord.eureka.keycloak.util.Constants.OAUTH2_URI_TOKEN_OPERATION;
+import static com.bindord.eureka.keycloak.util.Constants.Profiles.BACKOFFICE;
+import static com.bindord.eureka.keycloak.util.Constants.Profiles.CUSTOMER;
+import static com.bindord.eureka.keycloak.util.Constants.Profiles.SPECIALIST;
 
-@Repository
+@Component
 @Slf4j
 public class UserRepository {
 
-    private final Keycloak keycloak;
 
     private final Configuration keycloakConfig;
 
-    private final KeycloakClientIds keycloakClientIds;
+    private final KeycloakResolver keycloakResolver;
 
-    public UserRepository(Keycloak keycloak, Configuration keycloakConfig, KeycloakClientIds keycloakClientIds) {
-        this.keycloak = keycloak;
+    private final KeycloakManagement keycloakManagement;
+
+    public UserRepository(Configuration keycloakConfig, KeycloakResolver keycloakResolver, KeycloakManagement keycloakManagement) {
         this.keycloakConfig = keycloakConfig;
-        this.keycloakClientIds = keycloakClientIds;
+        this.keycloakResolver = keycloakResolver;
+        this.keycloakManagement = keycloakManagement;
     }
 
     @Value("${keycloak.realm}")
-    private String realm;
+    private String keycloakRealm;
 
     public UserToken authenticate(UserLogin user) {
 
@@ -74,7 +80,13 @@ public class UserRepository {
     }
 
     public UserRepresentation save(EurekaUser eurekaUser) throws CustomValidationException {
-        RealmResource realmResource = keycloak.realm(realm);
+        Integer profile = eurekaUser.getProfileType();
+        if (profile == null || profile > 3) {
+            throw new CustomValidationException("Profile type is required or is invalid");
+        }
+        RealmResource realmResource = keycloakResolver.resolve(eurekaUser.getProfileType()).realm(keycloakRealm);
+        var clientId = this.getClientIdByProfile(profile);
+        var clientDefaultRole = this.getGenericRoleByProfile(profile);
         UserRepresentation userRepresentation = new UserRepresentation();
         BeanUtils.copyProperties(eurekaUser, userRepresentation);
 
@@ -85,31 +97,14 @@ public class UserRepository {
 
         userRepresentation.setCredentials(List.of(credential));
         userRepresentation.setEnabled(true);
+
         // Get the client resource
-        var clientOauth = realmResource.clients().get(keycloakClientIds.getClientId());
-        System.out.println(clientOauth.roles());
-        realmResource.clients().findAll().forEach(e-> {
-            if(keycloakClientIds.getClientId().equals(e.getId())) {
-                try {
-                    System.out.println(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(e));
-                } catch (JsonProcessingException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-            System.out.println(e.getId());
-            System.out.println(e.getName());
-        });
-        ClientResource clientResource = clientOauth;
-// Get the role resource for each role
-        clientResource.roles().list().forEach(System.out::println);
-        RoleResource customerRoleResource = clientResource.roles().get("service_full");
-//        RoleResource adminRoleResource = clientResource.roles().get("adminx_jaipro_role");
-        // Get the role representations
+        ClientResource clientResource = realmResource.clients().get(clientId);
+        RoleResource customerRoleResource = clientResource.roles().get(clientDefaultRole);
         RoleRepresentation customerRoleRepresentation = customerRoleResource.toRepresentation();
-//        RoleRepresentation adminRoleRepresentation = adminRoleResource.toRepresentation();
 
         Map<String, List<String>> attributes = new HashMap<>();
-        attributes.put("profile", List.of("specialist"));
+        attributes.put(JAIPRO_MAPPER_GENERAL_PROFILE, List.of(profile.toString()));
         userRepresentation.setAttributes(attributes);
 
         Response response = realmResource.users().create(userRepresentation);
@@ -119,11 +114,9 @@ public class UserRepository {
             var userId = Lists.reverse(Arrays.asList(location.split("/"))).get(0);
             userRepresentation.setId(userId);
 
-
             // Get the user resource
             UserResource userResource = realmResource.users().get(userId);
-            userResource.roles().clientLevel(keycloakClientIds.getClientId()).add(List.of(customerRoleRepresentation/*, adminRoleRepresentation*/));
-
+            userResource.roles().clientLevel(clientId).add(List.of(customerRoleRepresentation));
 
             return userRepresentation;
         }
@@ -134,16 +127,17 @@ public class UserRepository {
     public UserToken refreshToken(String refreshToken) {
         AuthzClient authzClient = AuthzClient.create(keycloakConfig);
 
-        String url = new StringBuilder(
-                keycloakConfig.getAuthServerUrl())
-                .append(OAUTH2_URI_REALMS)
-                .append(keycloakConfig.getRealm())
-                .append(OAUTH2_URI_TOKEN_OPERATION).toString();
+        String url = keycloakConfig.getAuthServerUrl() +
+                OAUTH2_URI_REALMS +
+                keycloakConfig.getRealm() +
+                OAUTH2_URI_TOKEN_OPERATION;
 
         String clientId = keycloakConfig.getResource();
         String secret = (String) keycloakConfig.getCredentials().get(OAUTH2_SECRET);
-        Http http = new Http(authzClient.getConfiguration(), (params, headers) -> {
-        });
+        var clientCredProv = new ClientIdAndSecretCredentialsProvider();
+        var adapterConfig = new AdapterConfig();
+        clientCredProv.setClientCredentials(adapterConfig, Map.of(), Map.of());
+        Http http = new Http(authzClient.getConfiguration(), clientCredProv);
 
         AccessTokenResponse accessTokenResponse = http.<AccessTokenResponse>post(url)
                 .authentication()
@@ -163,7 +157,7 @@ public class UserRepository {
     }
 
     public String deleteAllUsers() {
-        RealmResource realmResource = keycloak.realm(realm);
+        RealmResource realmResource = keycloakResolver.buildDefault().realm(keycloakRealm);
         //GET TOTAL USERS
         // --> realmResource.users().count());
         //LIST USERS WHITIN RANGE (INIT, MAX)
@@ -176,7 +170,7 @@ public class UserRepository {
     }
 
     public void deleteByUserId(String userId) throws CustomValidationException {
-        RealmResource realmResource = keycloak.realm(realm);
+        RealmResource realmResource = keycloakResolver.buildDefault().realm(keycloakRealm);
         Response response = realmResource.users().delete(userId);
 
         var resCode = response.getStatus();
@@ -189,7 +183,7 @@ public class UserRepository {
     }
 
     public String updateUserPassword(UserPasswordDTO eurekaUser) {
-        RealmResource realmResource = keycloak.realm(realm);
+        RealmResource realmResource = keycloakResolver.buildDefault().realm(keycloakRealm);
 
         CredentialRepresentation credential = new CredentialRepresentation();
 
@@ -201,5 +195,31 @@ public class UserRepository {
         UserResource userResource = realmResource.users().get(eurekaUser.getUserId());
         userResource.update(userRepresentation);
         return HttpStatus.OK.toString();
+    }
+
+    public String getClientIdByProfile(Integer profileType) {
+        if (profileType == CUSTOMER.get()) {
+            return keycloakManagement.getCredentials().get(CUSTOMER.name().toLowerCase()).getId();
+        }
+        if (profileType == SPECIALIST.get()) {
+            return keycloakManagement.getCredentials().get(SPECIALIST.name().toLowerCase()).getId();
+        }
+        if (profileType == BACKOFFICE.get()) {
+            return keycloakManagement.getCredentials().get(BACKOFFICE.name().toLowerCase()).getId();
+        }
+        return StringUtils.EMPTY;
+    }
+
+    public String getGenericRoleByProfile(Integer profileType) {
+        if (profileType == CUSTOMER.get()) {
+            return CUSTOMER.name().toLowerCase();
+        }
+        if (profileType == SPECIALIST.get()) {
+            return SPECIALIST.name().toLowerCase();
+        }
+        if (profileType == BACKOFFICE.get()) {
+            return BACKOFFICE.name().toLowerCase();
+        }
+        return StringUtils.EMPTY;
     }
 }

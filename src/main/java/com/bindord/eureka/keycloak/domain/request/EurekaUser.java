@@ -7,8 +7,8 @@ import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.FederatedIdentityRepresentation;
 import org.keycloak.representations.idm.UserConsentRepresentation;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,6 +23,8 @@ public class EurekaUser {
     private String id;
     private String origin;
     private Long createdTimestamp;
+
+    private Integer profileType;
     private String username;
     private Boolean enabled;
     private Boolean emailVerified;
@@ -287,5 +289,13 @@ public class EurekaUser {
         }
 
         return attrs;
+    }
+
+    public Integer getProfileType() {
+        return profileType;
+    }
+
+    public void setProfileType(Integer profileType) {
+        this.profileType = profileType;
     }
 }

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
-import javax.ws.rs.NotAuthorizedException;
+import jakarta.ws.rs.NotAuthorizedException;
 
 import static com.bindord.eureka.keycloak.util.Enums.Error.ARCHIVO_EXCEDE_MAX_PERMITIDO;
 import static com.bindord.eureka.keycloak.util.Enums.Msg.RESOURCE_NOT_FOUND;

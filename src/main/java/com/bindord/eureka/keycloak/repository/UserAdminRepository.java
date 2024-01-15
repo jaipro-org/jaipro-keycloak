@@ -3,6 +3,7 @@ package com.bindord.eureka.keycloak.repository;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
@@ -11,9 +12,10 @@ import java.util.List;
 @Repository
 public class UserAdminRepository {
 
+
     private final Keycloak keycloak;
 
-    public UserAdminRepository(Keycloak keycloak) {
+    public UserAdminRepository(@Qualifier("keycloakDefault") Keycloak keycloak) {
         this.keycloak = keycloak;
     }
 

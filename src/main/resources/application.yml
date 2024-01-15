@@ -24,3 +24,60 @@ spring:
           starttls:
             enable: true
 #jmail.properties.mail.smtp.EnableSSL.enable:true;
+
+#roles
+keycloak:
+  realm:
+    jaipro:
+      management:
+        credentials:
+          default:
+            id: 50930f78-d691-40cb-9af6-488f05befd1e
+            client-id: app-jaipro
+            client-secret: RISkssjCuUi2YB9LvPEbk3f0Wv2Y4X88
+          customer:
+            id: 15533196-7652-4745-823e-8fb0f8153573
+            client-id: app-jaipro-customer
+            client-secret: "**********"
+          specialist:
+            id: 7b4b281c-ed2c-40f8-bd70-4c1471261d13
+            client-id: app-jaipro-specialist
+            client-secret: "**********"
+          backoffice:
+            id: 04788e04-f5e6-4c99-a1f4-f86f01c94118
+            client-id: app-jaipro-backoffice
+            client-secret: "**********"
+        profiles:
+          customer:
+            id: 1
+            name: customer
+            roles:
+              - name: customer
+                description: customer
+              - name: customer_basic
+                description: customer_basic
+              - name: customer_full
+                description: customer_full
+          specialist:
+            id: 2
+            name: specialist
+            roles:
+              - name: specialist
+                description: specialist
+              - name: specialist_basic
+                description: specialist_basic
+              - name: specialist_full
+                description: specialist_full
+              - name: service_basic
+                description: service_basic
+              - name: service_full
+                description: service_full
+          backoffice:
+            id: 3
+            name: backoffice
+            roles:
+              - name: backoffice
+                description: backoffice
+              - name: backoffice_full
+                description: backoffice_full
+
