@@ -51,7 +51,6 @@ import static com.bindord.eureka.keycloak.util.Constants.Profiles.SPECIALIST;
 @Slf4j
 public class UserRepository {
 
-
     private final Configuration keycloakConfig;
 
     private final KeycloakResolver keycloakResolver;

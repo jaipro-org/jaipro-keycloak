@@ -16,40 +16,43 @@ spec:
         run: keycloak
     spec:
       containers:
-        - image: jboss/keycloak:16.1.0
+        - image: quay.io/keycloak/keycloak:23.0
           name: keycloak
           ports:
             - containerPort: 8080
+          args: ["start-dev", "--log-level", "INFO"]
           env:
-            - name: DB_VENDOR
+            - name: KC_DB
               value: postgres
-            - name: DB_ADDR
-              value: 104.197.90.97
-            - name: DB_DATABASE
-              value: keycloak
-            - name: DB_USER
+            - name: KC_DB_URL
+              value: jdbc:postgresql://104.197.90.97:5432/keycloak
+            - name: KC_DB_USERNAME
               valueFrom:
                 secretKeyRef:
                   key: keycloak.db.user
                   name: keycloak-credentials
-            - name: DB_PASSWORD
+            - name: KC_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   key: keycloak.db.pwd
                   name: keycloak-credentials
-            - name: KEYCLOAK_USER
+            - name: KEYCLOAK_ADMIN
               valueFrom:
                 secretKeyRef:
                   key: keycloak.user
                   name: keycloak-credentials
-            - name: KEYCLOAK_PASSWORD
+            - name: KEYCLOAK_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
                   key: keycloak.user.pwd
                   name: keycloak-credentials
             - name: KEYCLOAK_LOGLEVEL
               value: INFO
-            - name: WILDFLY_LOGLEVEL
+            - name: KEYCLOAK_LOGLEVEL_ORG_KEYCLOAK
               value: INFO
+            - name: KC_HEALTH_ENABLED
+              value: "true"
+            - name: KC_METRICS_ENABLED
+              value: "true"
       dnsPolicy: ClusterFirst
       restartPolicy: Always
