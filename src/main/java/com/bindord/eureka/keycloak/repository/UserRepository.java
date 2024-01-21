@@ -103,7 +103,7 @@ public class UserRepository {
         RoleRepresentation customerRoleRepresentation = customerRoleResource.toRepresentation();
 
         Map<String, List<String>> attributes = new HashMap<>();
-        attributes.put(JAIPRO_MAPPER_GENERAL_PROFILE, List.of(profile.toString()));
+        attributes.put(JAIPRO_MAPPER_GENERAL_PROFILE, List.of(getProfileName(profile)));
         userRepresentation.setAttributes(attributes);
 
         Response response = realmResource.users().create(userRepresentation);
@@ -205,6 +205,19 @@ public class UserRepository {
         }
         if (profileType == BACKOFFICE.get()) {
             return keycloakManagement.getCredentials().get(BACKOFFICE.name().toLowerCase()).getId();
+        }
+        return StringUtils.EMPTY;
+    }
+
+    public String getProfileName(Integer profileType) {
+        if (profileType == CUSTOMER.get()) {
+            return CUSTOMER.name().toLowerCase();
+        }
+        if (profileType == SPECIALIST.get()) {
+            return SPECIALIST.name().toLowerCase();
+        }
+        if (profileType == BACKOFFICE.get()) {
+            return BACKOFFICE.name().toLowerCase();
         }
         return StringUtils.EMPTY;
     }
