@@ -27,7 +27,7 @@ spec:
           image: gcr.io/rapid-access-410400/jaipro-keycloak
           imagePullPolicy: Always
           ports:
-            - containerPort: 8080
+            - containerPort: 8090
               name: netty-port
           readinessProbe:
             httpGet:
