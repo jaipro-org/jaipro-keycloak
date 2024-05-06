@@ -1,6 +1,15 @@
-# TO GENERATE SECRET YAML
+# STEP 1
+## GENERATE SECRET YAML
 kdry create secret generic keycloak-credentials
 --from-literal keycloak.user=admin
 --from-literal keycloak.user.pwd=admin
 --from-literal keycloak.db.user=appuser
 --from-literal keycloak.db.pwd=passsword
+
+(Check the file secrets.yaml)
+
+# STEP 2
+## WITH THE RESULTS OF STEP ONE, CREATE A NEW YAML DESCRIPTOR AND MODIFIED WITH THE CORRECT VALUES
+
+# STEP 3
+## EXECUTE THE YAML IN K8S

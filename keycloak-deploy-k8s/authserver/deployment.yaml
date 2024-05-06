@@ -16,7 +16,7 @@ spec:
         run: keycloak
     spec:
       containers:
-        - image: quay.io/keycloak/keycloak:23.0
+        - image: us-central1-docker.pkg.dev/useful-cyclist-422004/artifact-jaipro/keycloak:23.0
           name: keycloak
           ports:
             - containerPort: 8080
@@ -25,7 +25,7 @@ spec:
             - name: KC_DB
               value: postgres
             - name: KC_DB_URL
-              value: jdbc:postgresql://104.197.90.97:5432/keycloak
+              value: jdbc:postgresql://10.19.176.3:5432/keycloak
             - name: KC_DB_USERNAME
               valueFrom:
                 secretKeyRef:

@@ -14,8 +14,10 @@
     <name>jaipro-keycloak</name>
     <description>jaipro-keycloak</description>
     <properties>
-        <java.version>11</java.version>
-        <gcp-project-id>rapid-access-410400</gcp-project-id>
+        <java.version>17</java.version>
+        <gcp-project-id>useful-cyclist-422004</gcp-project-id>
+        <artifact-registry-host-region>us-central1-docker.pkg.dev</artifact-registry-host-region>
+        <artifact-registry-repository>artifact-jaipro</artifact-registry-repository>
         <keycloak-admin-client.version>23.0.4</keycloak-admin-client.version>
         <keycloak-authz-client.version>23.0.4</keycloak-authz-client.version>
         <aspectjweaver.version>1.9.21</aspectjweaver.version>
@@ -128,10 +130,10 @@
                 <version>3.3.0</version>
                 <configuration>
                     <from>
-                        <image>gcr.io/${gcp-project-id}/ms-base-image:jdk-17</image>
+                        <image>${artifact-registry-host-region}/${gcp-project-id}/${artifact-registry-repository}/ms-base-image:latest</image>
                     </from>
                     <to>
-                        <image>gcr.io/${gcp-project-id}/${project.name}</image>
+                        <image>${artifact-registry-host-region}/${gcp-project-id}/${artifact-registry-repository}/${project.name}</image>
                     </to>
                     <container>
                         <mainClass>${project.groupId}.${project.artifactId}.EurekaKeycloakApplication</mainClass>

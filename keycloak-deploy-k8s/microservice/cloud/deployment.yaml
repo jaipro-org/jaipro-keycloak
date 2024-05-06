@@ -24,7 +24,7 @@ spec:
       serviceAccountName: jaipro-sa
       containers:
         - name: jaipro-keycloak
-          image: gcr.io/rapid-access-410400/jaipro-keycloak
+          image: us-central1-docker.pkg.dev/useful-cyclist-422004/artifact-jaipro/jaipro-keycloak
           imagePullPolicy: Always
           ports:
             - containerPort: 8090
